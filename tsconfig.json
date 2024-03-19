@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "CommonJS",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "paths": {
+      "@errors/*": ["errors/*"],
+      "@container/*": ["container/*"],
+      "@infra/*": ["infra/*"],
+      "@repositories/*": ["respositories/*"],
+      "@dtos/*": ["dtos/*"],
+      "@useCases/*": ["useCases/*"],
+      "@config/*": ["config/*"],
+    },
+    "types": ["vitest/globals"],
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "skipLibCheck": true
+  }
+}
