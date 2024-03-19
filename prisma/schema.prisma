@@ -12,3 +12,58 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id          String    @id @default(uuid())
+  name        String
+  employee_id String
+  password    String
+  email       String    @default("")
+  avatar_url  String?
+  created_at  DateTime  @default(now())
+  blocked     Boolean   @default(false)
+  blocked_at  DateTime?
+
+  token_reset_password            String?
+  token_reset_password_expired_at DateTime?
+
+  employee Employee @relation(fields: [employee_id], references: [id])
+
+  ClockRegistry ClockRegistry[]
+
+  @@map("users")
+}
+
+model Employee {
+  id           String  @id @default(uuid())
+  registration String
+  address      String?
+  cpf          String
+  name         String
+  job_role     String
+  pib          String?
+  telphone     String?
+  celphone     String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  User User[]
+
+  @@map("employee")
+}
+
+model ClockRegistry {
+  id              String   @id @default(uuid())
+  user_id         String
+  category        String
+  is_business_day Boolean
+  marked_at       DateTime @default(now())
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("clock_registry")
+}
