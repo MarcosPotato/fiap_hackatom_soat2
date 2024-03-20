@@ -9,6 +9,7 @@ const envSchema = z.object({
     .default('development ')
     .transform((item) => item.trim()),
   PORT: z.coerce.number(),
+  JWT_SECRET: z.string(),
 
   MAIL_MAILER: z.string().optional(),
   MAIL_HOST: z.string(),
