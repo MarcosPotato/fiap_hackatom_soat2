@@ -16,6 +16,7 @@
       "@repositories/*": ["respositories/*"],
       "@useCases/*": ["useCases/*"],
       "@models/*": ["models/*"],
+      "@utils/*": ["utils/*"],
     },
     "types": ["vitest/globals"],
     "resolveJsonModule": true,

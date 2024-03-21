@@ -1,5 +1,5 @@
 import { UserRepository } from '@infra/prisma/repositories/UserRepository';
-import { AuthenticateUserService } from '@useCases/authentication/AuthenticateUserService';
+import { AuthenticateUserUseCase } from '@useCases/authentication/AuthenticateUserUseCase';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 
@@ -13,9 +13,9 @@ export const AuthenticateController = {
     const { registration, password } = requestBodyZ.parse(request.body);
 
     const userRepository = new UserRepository();
-    const authenticateUserService = new AuthenticateUserService(userRepository);
+    const authenticateUserUseCase = new AuthenticateUserUseCase(userRepository);
 
-    const userInfo = await authenticateUserService.execute({
+    const userInfo = await authenticateUserUseCase.execute({
       registration,
       password,
     });
