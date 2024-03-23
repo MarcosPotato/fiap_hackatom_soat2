@@ -3,6 +3,7 @@ import { IClockRegistry } from "@models/IClockRegistry";
 import { prisma } from "@providers/prisma";
 import dayjs from "dayjs";
 import { IClockRegistryRepository } from "repositories/IClockRegistryRepository";
+import { IEmployeeReportDTO } from "@dtos/IEmployeeReportDTO";
 
 export class ClockRegistryRepository implements IClockRegistryRepository{
     async getRegistriesByUserId(id: string, sort: "asc" | "desc" = "asc"): Promise<IClockRegistry[]> {
@@ -27,6 +28,7 @@ export class ClockRegistryRepository implements IClockRegistryRepository{
 
         return registries as IClockRegistry[]
     }
+
     async getRegistriesOfCurrentDayByUserId(id: string, sort?: "asc" | "desc" | undefined): Promise<IClockRegistry[]> {
         const currentDay = dayjs()
 
@@ -55,6 +57,7 @@ export class ClockRegistryRepository implements IClockRegistryRepository{
 
         return registries as IClockRegistry[]
     }
+
     async createRegistry({ 
         category, 
         is_business_day, 
@@ -83,4 +86,20 @@ export class ClockRegistryRepository implements IClockRegistryRepository{
         return newRegistry as IClockRegistry
     }
     
+    async getMonthlyEmployeeRegistries({ month, userId, year}: IEmployeeReportDTO): Promise<Omit<IClockRegistry, "user">[]> {
+        const dateIn = dayjs(`${year}-${month + 1}-01`)
+        const dateAt = dateIn.endOf('month')
+        
+        const registries = await prisma.clockRegistry.findMany({
+            where: {
+                user_id: userId,
+                marked_at: {
+                    gte: dateIn.toDate(),
+                    lte: dateAt.toDate()
+                }
+            },
+        })
+
+        return registries as Omit<IClockRegistry, "user">[]
+    }
 }

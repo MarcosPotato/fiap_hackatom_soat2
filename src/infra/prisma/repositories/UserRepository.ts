@@ -1,9 +1,9 @@
 import { prisma } from "@providers/prisma";
 import { IUser } from "@models/IUser";
-import { IUserRepository } from "repositories/IUserRepository";
+import { GetParams, IUserRepository } from "repositories/IUserRepository";
 
 export class UserRepository implements IUserRepository {
-  async getUserById(id: string): Promise<IUser | null> {
+  async getUserById(id: string, options?: GetParams): Promise<IUser | null> {
     const user = await prisma.user.findUnique({
       where: {
         id: id,
@@ -11,7 +11,13 @@ export class UserRepository implements IUserRepository {
       include: {
         employee: {
           select: {
-            registration: true
+            registration: true,
+            address: !!options?.employee,
+            celphone: !!options?.employee,
+            cpf: !!options?.employee,
+            job_role: !!options?.employee,
+            pib: !!options?.employee,
+            telphone: !!options?.employee,
           }
         }
       }
@@ -19,6 +25,26 @@ export class UserRepository implements IUserRepository {
 
     if (!user) {
       return null;
+    }
+
+    if(options?.employee){
+      return {
+        id: user.id,
+        name: user.name,
+        registration: user.employee.registration,
+        email: user.email,
+        password: user.password,
+        avatar_url: user.avatar_url,
+        blocked: user.blocked,
+        address: user.employee.address,
+        celphone: user.employee.celphone,
+        cpf: user.employee.cpf,
+        job_role: user.employee.job_role,
+        pib: user.employee.pib,
+        telphone: user.employee.telphone,
+        blocked_at: user.blocked_at,
+        created_at: user.created_at,
+      };
     }
 
     return {

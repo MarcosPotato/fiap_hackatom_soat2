@@ -1,10 +1,16 @@
 import { PrismaClient } from '@prisma/client'
 //@ts-ignore
 import { users } from './constants/user'
+//@ts-ignore
+import { registries } from './constants/registries'
 
 const prisma = new PrismaClient()
 
 async function main() {
+
+  await prisma.clockRegistry.deleteMany()
+  await prisma.user.deleteMany()
+  await prisma.employee.deleteMany()
 
   const usersSeed = users.map((user) => {
     return prisma.user.create({
@@ -29,7 +35,24 @@ async function main() {
     })
   })
 
-  await prisma.$transaction(usersSeed)
+  const registriesSeed = registries.map(registry => {
+    return prisma.clockRegistry.create({
+      data: {
+        id: registry.id,
+        category: registry.category,
+        is_business_day: registry.is_business_day,
+        created_at: registry.created_at,
+        marked_at: registry.marked_at,
+        updated_at: registry.marked_at,
+        user_id: registry.user.id
+      }
+    })
+  })
+
+  await prisma.$transaction([
+    ...usersSeed,
+    ...registriesSeed
+  ])
 }
 
 main()

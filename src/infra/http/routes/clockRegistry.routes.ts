@@ -6,5 +6,6 @@ export async function clockRegistryRoutes(app: FastifyInstance) {
   app.addHook('onRequest', verifyJWT);
 
   app.get('/registries/:userId', ClockRegsitryController.index);
+  app.post('/registries/report', ClockRegsitryController.userReport);
   app.patch('/mark-registry', ClockRegsitryController.create);
 }
